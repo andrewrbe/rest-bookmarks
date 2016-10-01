@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test page</title>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+получить список 10 последних добавленных Bookmark:
+<div id="last10" style="height: 200px; overflow:  auto"></div>
+<script>
+    $.ajax({
+        'url': '/api/bookmarks',
+        success: function (data) {
+            $('#last10').html("<pre>" + JSON.stringify(data, null, 1) + "</pre>");
+        }
+    })
+</script>
+
+<div id="bm"></div>
+
+добавить Bookmark по url и получить Bookmark.uid. Если уже есть Bookmark с таким url, не добавлять ещё один, но получить Bookmark.uid.
+<input id="add">
+<button id="addButton">GO</button>
+<script>
+    $('#addButton').click(function () {
+        $.ajax({
+            url: '/api/bookmark',
+            method: 'PUT',
+            data: {'url': $('#add').val()},
+            success: function (data) {
+                $('#bm').html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
+            },
+            error: function (data) {
+                console.log(data);
+                $('#bm').html("<pre>" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
+            }
+        })
+    })
+</script>
+<br/>
+
+получить Bookmark (с комментариями) по Bookmark.url. Если такого ещё нет, не создавать: <input id="find">
+<button id="findButton">GO</button>
+
+<script>
+    $('#findButton').click(function () {
+        $.ajax({
+            'url': '/api/bookmark',
+            data: {'url': $('#find').val()},
+            success: function (data) {
+                $('#bm').html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
+            },
+            error: function (data) {
+                $('#bm').html("<pre>" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
+            }
+        })
+    })
+</script>
+
+
+<br/>
+
+
+<br/>
+добавить Comment к Bookmark (по uid) и получить Comment.uid: <input id="addComment"> <input id="uid">
+<button id="addCommentButton">GO</button>
+<br/>
+
+<script>
+    $('#addCommentButton').click(function () {
+        $.ajax({
+            url: '/api/comment',
+            method: 'PUT',
+            data: {'uid': $('#uid').val(), text: $('#addComment').val()},
+            success: function (data) {
+                $('#bm').html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
+            },
+            error: function (data) {
+                $('#bm').html("<pre>" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
+            }
+        })
+    });
+</script>
+
+
+
+изменить Comment.text по uid (если он добавлен с этого же IP и прошло меньше часа после добавления)
+<input id="editComment" placeholder="text"> <input id="uidEC" placeholder="uid">
+<button id="editCommentButton">GO</button>
+<br/>
+
+<script>
+    $('#editCommentButton').click(function () {
+        $.ajax({
+            url: '/api/comment',
+            method: 'POST',
+            data: {'uid': $('#uidEC').val(), text: $('#editComment').val()},
+            success: function (data) {
+                $('#bm').html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
+            },
+            error: function (data) {
+                $('#bm').html("<pre>" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
+            }
+        })
+    });
+</script>
+
+
+<br/>
+удалить Comment по uid (если он добавлен с этого же IP и прошло меньше часа после добавления)
+
+<input id="cUid">
+<button id="deleteCommentButton">GO</button>
+<br/>
+
+<script>
+    $('#deleteCommentButton').click(function () {
+        $.ajax({
+            url: '/api/comment',
+            method: 'DELETE',
+            data: {'uid': $('#cUid').val()},
+            success: function (data) {
+                $('#bm').html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
+            },
+            error: function (data) {
+                $('#bm').html("<pre>" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
+            }
+        })
+    });
+</script>
+
+
+</body>
+</html>
