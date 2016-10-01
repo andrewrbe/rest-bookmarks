@@ -20,29 +20,32 @@
 <script>
     $.ajax({
         'url': '/api/bookmarks',
+        method: 'GET',
         success: function (data) {
-            $('#last10').html("<pre>" + JSON.stringify(data, null, 1) + "</pre>");
+            $('#last10').html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
+        },
+        error: function (data) {
+            console.log(data.responseJSON);
         }
-    })
+    });
 </script>
 
 <div id="bm"></div>
 
 добавить Bookmark по url и получить Bookmark.uid. Если уже есть Bookmark с таким url, не добавлять ещё один, но получить Bookmark.uid.
-<input id="add">
+<input id="url">
 <button id="addButton">GO</button>
 <script>
     $('#addButton').click(function () {
         $.ajax({
-            url: '/api/bookmark',
+            'url': '/api/bookmark',
             method: 'PUT',
-            data: {'url': $('#add').val()},
+            data: {url: $('#url').val()},
             success: function (data) {
-                $('#bm').html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
+                $('#bm').html(JSON.stringify(data, null, 2));
             },
             error: function (data) {
-                console.log(data);
-                $('#bm').html("<pre>" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
+                $('#bm').html('ERROR:' + JSON.stringify(data.responseJSON, null, 2));
             }
         })
     })
@@ -56,12 +59,13 @@
     $('#findButton').click(function () {
         $.ajax({
             'url': '/api/bookmark',
-            data: {'url': $('#find').val()},
+            method: 'GET',
+            data: {url: $('#find').val()},
             success: function (data) {
                 $('#bm').html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
             },
             error: function (data) {
-                $('#bm').html("<pre>" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
+                $('#bm').html('ERROR:' + JSON.stringify(data.responseJSON, null, 2));
             }
         })
     })
@@ -79,19 +83,18 @@
 <script>
     $('#addCommentButton').click(function () {
         $.ajax({
-            url: '/api/comment',
+            'url': '/api/comment',
             method: 'PUT',
-            data: {'uid': $('#uid').val(), text: $('#addComment').val()},
+            data: {uid: $('#uid').val(), text: $('#addComment').val()},
             success: function (data) {
                 $('#bm').html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
             },
             error: function (data) {
-                $('#bm').html("<pre>" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
+                $('#bm').html('ERROR:' + JSON.stringify(data.responseJSON, null, 2));
             }
         })
     });
 </script>
-
 
 
 изменить Comment.text по uid (если он добавлен с этого же IP и прошло меньше часа после добавления)
@@ -102,16 +105,17 @@
 <script>
     $('#editCommentButton').click(function () {
         $.ajax({
-            url: '/api/comment',
+            'url': '/api/comment',
             method: 'POST',
             data: {'uid': $('#uidEC').val(), text: $('#editComment').val()},
             success: function (data) {
                 $('#bm').html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
             },
             error: function (data) {
-                $('#bm').html("<pre>" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
+                $('#bm').html("<pre>ERROR" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
             }
         })
+
     });
 </script>
 
@@ -125,17 +129,19 @@
 
 <script>
     $('#deleteCommentButton').click(function () {
+
         $.ajax({
-            url: '/api/comment',
+            'url': '/api/comment',
             method: 'DELETE',
             data: {'uid': $('#cUid').val()},
             success: function (data) {
                 $('#bm').html("<pre>" + JSON.stringify(data, null, 2) + "</pre>");
             },
             error: function (data) {
-                $('#bm').html("<pre>" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
+                $('#bm').html("<pre>ERROR:" + JSON.stringify(data.responseJSON, null, 2) + "</pre>");
             }
         })
+
     });
 </script>
 

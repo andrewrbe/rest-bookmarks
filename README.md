@@ -91,12 +91,12 @@ PUT запрос на /api/bookmark ссылка передается в пер�
 
 Добавление comment
 --------------------------------------------
-PUT запрос на /api/comment uid-bookmark передается в переменной uid:
+PUT запрос на /api/comment uid-bookmark передается в переменной uid, текст комментраия в text:
 ```javascript
  $.ajax({
         'url': '/api/comment',
         method: 'PUT',
-        data: {uid: '123123123'},
+        data: {uid: '123123123', text: 'Comment'},
         success: function (data) {
                     	console.log(data);
 		},

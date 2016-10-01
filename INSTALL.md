@@ -1,5 +1,15 @@
 Установка
 ==============
+```bash
+git clone git@github.com:andrewrbe/rest-bookmarks.git
+cd rest-bookmarks
+chmod 777 var
+cp var/default.database.sqlite var/database.sqlite
+chmod 666 var/database.sqlite
+composer install
+```
+
+
 Пример конфига для nginx
 --------
 ```nginx
